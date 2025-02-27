@@ -6,13 +6,19 @@ async function load_image(image_data) {
     let image_url = FileURL+image_data.id+FileExportData
     let NewImage = new Image()
     NewImage.src = image_url
-    let origin_height = NewImage.naturalHeight;
-    let origin_width = NewImage.naturalWidth
-    NewImage.height = CONFIG_DETAILS["img-height-default"]
-    NewImage.width = (origin_width)*(CONFIG_DETAILS["img-height-default"]/origin_height)
-    document.getElementsByClassName("img-container-holder")[0].appendChild(NewImage)
+
+    NewImage.onload = function()
+    {
+        let origin_height = NewImage.naturalHeight;
+        let origin_width = NewImage.naturalWidth;
+        NewImage.height = CONFIG_DETAILS["img-height-default"]
+        NewImage.width = (origin_width)*(CONFIG_DETAILS["img-height-default"]/origin_height)
+        document.getElementsByClassName("img-container-holder")[0].appendChild(NewImage)
+        console.log("image_loaded")
+        
+    }
+
     
-    console.log("image_loaded")
 }
 
 async function get_initial_images(){
