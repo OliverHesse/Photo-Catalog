@@ -1,0 +1,22 @@
+img {
+    
+  }
+.img-container-holder{
+  width: 1200px;
+  height: 4000px;
+  overflow:auto;
+  display: flex;
+  flex-direction: row;
+  gap:5px;
+  flex-wrap: wrap;
+}
+
+
+#temp{
+  
+  
+}
+.img-container{
+  
+
+}
