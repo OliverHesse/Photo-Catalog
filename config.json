@@ -1,5 +1,6 @@
 {
     "img-height-default":100,
     "img-height-min":20,
-    "img-height-max":400
+    "img-height-max":400,
+    "initial-image-loaded-number":200
 }
