@@ -1,17 +1,21 @@
-img {
-    
-  }
+body{
+  display: flex;
+  justify-content: center ;
+}
+
 .img-container-holder{
   width: 1200px;
-  height: 4000px;
-  overflow:auto;
+  height: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: row;
   gap:5px;
   flex-wrap: wrap;
 }
 
-
+img{
+  cursor: zoom-in;
+}
 #temp{
   
   
