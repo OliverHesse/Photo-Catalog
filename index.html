@@ -4,11 +4,25 @@
         <link rel="stylesheet" href="css/index.css">
     </head>
     <body>
+
         <div class = "img-container-holder">
 
+        </div>
+        <div class = "selected-image-holder" hidden>
+            <button class="next_button" style = "position: fixed; left: 5px; top: 50%; transform: scaleX(-1);"><img height="15" width="15" src="assets/next_icon.svg"></button>
+                
+            <div class="toolbar">
+                <button  onclick="full_screen_select()" class="tool_button"><img id= "change_screen_state_img" height="15" width="15" src="assets/expand-fullscreen.svg"></button>
+                <button onclick="close_selected()"class="tool_button"><img height="15" width="15" src="assets/close_icon.svg"></button>
+                
+            </div>
+            <img class="selected-image">
+            <button class="next_button" style = "position: fixed; right: 5px; top: 50%;"><img height="15" width="15" src="assets/next_icon.svg"></button>
+                
         </div>
 
     </body>
     <script src="js/CONST_DEFINITIONS.js"></script>
+    <script src="js/main.js"></script>
     <script src="js/Initialization.js"></script>
 </html>

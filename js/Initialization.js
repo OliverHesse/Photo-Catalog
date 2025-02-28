@@ -6,7 +6,7 @@ async function load_image(image_data) {
     let image_url = FileURL+image_data.id+FileExportData
     let NewImage = new Image()
     NewImage.src = image_url
-
+    NewImage.onclick = select_image
     NewImage.onload = function()
     {
         let origin_height = NewImage.naturalHeight;

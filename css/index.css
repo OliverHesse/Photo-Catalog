@@ -1,9 +1,14 @@
-body{
+html,body{
   display: flex;
-  justify-content: center ;
+  justify-content: center;
+  background-color: #788a63;
+  margin:0px;
+  overflow: hidden;
+  height: 100%;
 }
 
 .img-container-holder{
+  padding-top: 5px;
   border-right: 2px;
   border-left: 2px;
   border-top:0px;
@@ -12,22 +17,62 @@ body{
   border-color: black;
   width: 800px;
   height: 100%;
-  overflow-y: auto;
+  overflow-y:auto;
   display: flex;
   justify-content: center;
   flex-direction: row;
   gap:2px;
   flex-wrap: wrap;
 }
-
+.selected-image-holder{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.toolbar{
+  position: fixed;
+  top:5px;
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: right;
+  padding-right: 10px;
+  gap:5px;
+}
+.tool_button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0);
+  border: 0px;
+  margin:0px;
+  padding:0px;
+  width: 30px;
+  height: 30px;
+}
+.tool_button:hover{
+  background-color: rgba(90, 90, 90, 0.548);
+}
+.next_button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+  background-color: rgba(0, 0, 0, 0);
+  border: 0px;
+  margin:0px;
+  padding:0px;
+  width: 30px;
+  height: 30px;}
+.next_button:hover{
+  background-color: rgba(90, 90, 90, 0.548);
+}
 img{
   cursor: zoom-in;
-}
-#temp{
-  
-  
-}
-.img-container{
-  
-
 }
