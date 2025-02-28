@@ -13,6 +13,7 @@ async function load_image(image_data) {
         let origin_width = NewImage.naturalWidth;
         NewImage.height = CONFIG_DETAILS["img-height-default"]
         NewImage.width = (origin_width)*(CONFIG_DETAILS["img-height-default"]/origin_height)
+       
         document.getElementsByClassName("img-container-holder")[0].appendChild(NewImage)
         console.log("image_loaded")
         

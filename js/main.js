@@ -40,7 +40,7 @@ function select_image(event){
 function close_selected(){
     if(document.fullscreenElement){closeFullscreen()}
     let container = document.getElementsByClassName("selected-image-holder")[0]
-
+    document.getElementsByClassName("selected-image")[0].src = ""
     if(container.style.display == "flex"){container.style.display="none"}
     
 }
