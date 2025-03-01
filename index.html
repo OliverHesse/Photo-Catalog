@@ -5,9 +5,40 @@
         <link rel="stylesheet" href="css/index.css">
     </head>
     <body>
-
+        <div class = "option-bar">
+            <button id="add-tag-btn">Add Tags</button>
+            <button>View Tags</button>
+        </div>
         <div class = "img-container-holder">
 
+        </div>
+        <div class="blackout" style="display: none;" >
+            <div class = "tag-container-holder">
+                <div class="tag-title-container"style="width:100%;padding-top: 5px; font-size: 2rem; padding-bottom: 10px;">
+                    <div class="tag-title-grid-section">
+                        <button id="retrace-root-tag" style="transform:rotate(-90deg); display: none;" ><img src="assets/retrace-tag.svg"  height="20" width="20" ></button>
+                    </div>
+                    <div class="tag-title-grid-section">
+                        <div id="current-root-tag">
+                            root
+                        </div>
+                    </div>
+                    <div class="tag-title-grid-section">
+                        <button class="tool_button"><img height="15" width="15" src="assets/close_black.svg"></button>
+                    </div>
+                </div>
+                
+                <div class="tag-container">
+                    <div class="tag-option">
+                        <img class = "tag-state-img normal"  onclick="change_tag_state(this)" style="cursor: pointer;" width="10px" height= "10px"src="assets/normal.svg">
+                        <span class = "tag-span" onclick="change_tag_state(this)" style="cursor: pointer;user-select: none;">Example Tag</span>
+                        <button onclick="dive_tag(this)" class="dive-tag-btn"><img width="10px" height= "10px"src="assets/retrace-tag.svg" style="transform: rotate(90deg);"></button>
+                    </div>
+                    <div class="tag-option">
+                        temp
+                    </div>
+                </div>
+            </div>
         </div>
         <div class = "selected-image-holder" hidden>
             <button class="next_button" style = "position: fixed; left: 5px; top: 50%; transform: scaleX(-1);"><img height="15" width="15" src="assets/next_icon.svg"></button>

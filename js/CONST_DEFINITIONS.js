@@ -5,5 +5,8 @@ const TestFileID = "11Q5PMbXKAvW3RX9kD67dyYTOMFIS6KD6"
 const FileURL = "https://drive.google.com/thumbnail?id="
 const FileExportData = "&export&sz=w1000"
 const config_url = "https://oliverhesse.github.io/Photo-Catalog/config.json"
-
-CONFIG_DETAILS = {}
+const data_folder_url = "https://oliverhesse.github.io/Photo-Catalog/data/"
+let TAG_RELATIONSHIPS = {}
+let TAG_IMG_RELATIONHIPS = {}
+let CONFIG_DETAILS = {}
+let TagFilterSettings = {"exclude":[],"include":[]}

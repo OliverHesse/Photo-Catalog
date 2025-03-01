@@ -1,0 +1,23 @@
+{
+    "Location":{
+        "content":[],
+        "children":{ 
+            "Florida":{"content":[],"children":{}},
+            "Wales":{"content":[],"children":{}}
+        }
+
+    },
+    "Animal":{
+        "content":[],
+        "children":{
+            "Bird":{"content":[],"children":{}},
+            "Reptile":{"content":[],
+                    "children":{
+                        "Iguana":{"content":[],"children":{}},
+                        "Anole":{"content":[],"children":{}}
+                    }
+                    },
+            "Insect":{"content":[],"children":{}}
+        }
+    }
+}

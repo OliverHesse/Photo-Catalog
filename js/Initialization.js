@@ -1,5 +1,32 @@
-const INIT_FUNCTION_CALL_ORDER = [load_config,get_initial_images]
+const INIT_FUNCTION_CALL_ORDER = [load_config,get_initial_images,generate_tag_relationships]
+//TO KEEP MY SANITY THERE CAN ONLY BE 1 OF ANY TAG. even if a tag is a child of another tag it cannot share a name with any other tag
+//TODO fix this shit
+function generate_nested_tags_tag_relationship(tag_dic,parent_tag){
+    let return_dic = {}
+    let child_list = []
+    for(const tag of tag_dic["children"]){
+        child_list.push(child_tag)
+        return_dic.update(generate_nested_tags_tag_relationship(data[top_level_tag]["children"][child_tag]))
+    }
+    return (return_dic.update({parent_tag,child_list}))
+}
 
+async function generate_tag_relationships(){
+    let response = await fetch(data_folder_url+"tags.json")
+    let data = response.json()
+    console.log(data)
+    for(const top_level_tag of data){
+        let child_list = []
+        for(const child_tag of data[top_level_tag]["children"]){
+            child_list.push(child_tag)
+            TAG_RELATIONSHIPS.update(generate_nested_tags_tag_relationship(data[top_level_tag]["children"][child_tag],child_tag))
+            
+        }
+        TAG_RELATIONSHIPS.update({top_level_tag:child_list})
+    }
+    console.log(TAG_RELATIONSHIPS)
+}
+function generate_tag_image_relationships(){}
 
 //by default does not support nested folders
 async function load_image(image_data) {
@@ -33,8 +60,8 @@ async function get_initial_images(){
 }
 
 async function load_config(){
-    response = await fetch(config_url)
-    data = await response.json()
+    let response = await fetch(config_url)
+    let data = await response.json()
     CONFIG_DETAILS = data
     console.log(data)
     console.log("finished loading config")

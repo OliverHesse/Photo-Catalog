@@ -112,3 +112,93 @@ function closeFullscreen() {
       document.msExitFullscreen();
     }
   }
+
+
+function create_child_tag_array(parent_tag){
+  let child_array = []
+  for(const child of TAG_RELATIONSHIPS[parent_tag]["top-level-children"]){
+    child_array += create_child_tag_array(child) + [child]
+  }
+  return child_array
+}
+
+
+function addNewTagFilter(tag,filter_type){
+  if(filter_type == "normal"){
+    TagFilterSettings["exclude"] =  TagFilterSettings["exclude"] .filter(item => item !== filter_type);
+    TagFilterSettings["include"] =  TagFilterSettings["include"] .filter(item => item !== filter_type);
+  }else if(filter_type == "exclude"){
+    //find all children and remove
+    child_list = create_child_tag_array(tag) + [tag];
+    TagFilterSettings["include"] =  TagFilterSettings["include"] .filter(item => !(child_list.includes(item)));
+    TagFilterSettings["exclude"] =  TagFilterSettings["exclude"] .filter(item => !(child_list.includes(item)));
+    //find all children and remove
+    TagFilterSettings["exclude"].push(tag)
+  }else if(filter_type == "include"){
+    //find all children and remove
+    child_list = create_child_tag_array(tag) + [tag];
+    TagFilterSettings["include"] =  TagFilterSettings["include"] .filter(item => !(child_list.includes(item)));
+    TagFilterSettings["exclude"] =  TagFilterSettings["exclude"] .filter(item => !(child_list.includes(item)));
+    //find all children and remove
+    TagFilterSettings["include"].push(tag)
+  }
+}
+
+
+let root_tag = "root"
+function dive_tag(e){
+  let root_title = getElementById("current-root-tag")
+  //clear holder
+  let container = document.getElementsByClassName("tag-container")[0]
+  container.innerHTML = ""
+  let tag = e.parent.childNodes[1].innerHTML
+  root_title.innerHTML = tag
+  let top_level_child_tags = TAG_RELATIONSHIPS[tag]["top-level-children"]
+  //generate tag option
+  for(const child_tag of top_level_child_tags){
+    let tag_state = "normal"
+    if(TagFilterSettings["exclude"].includes(child_tag)){tag_state="exclude"}
+    if(TagFilterSettings["include"].includes(child_tag)){tag_state="include"}
+    let html_text = `<div class="tag-option">
+                    <img class = "tag-state-img normal"  onclick="change_tag_state(this)" style="cursor: pointer;" width="10px" height= "10px"src="assets/${tag_state}.svg">
+                    <span class = "tag-span" onclick="change_tag_state(this)" style="cursor: pointer;user-select: none;">${child_tag}</span>
+                    <button onclick="dive_tag(this)" class="dive-tag-btn"><img width="10px" height= "10px"src="assets/retrace-tag.svg" style="transform: rotate(90deg);"></button>
+                </div>`
+    container.innerHTML += html_text
+  }
+}
+
+function change_tag_state(e){
+  let tag = null
+  if(e.classList.contains("tag-state-img")){
+    let parent = e.parentNode;
+    tag = parent.children[1].innerHTML;
+  }else{
+    //the span was clicked
+    tag = e.innerHTML
+    console.log( e.parentNode.children)
+    e = e.parentNode.children[0]
+  }
+
+  if(e.classList.contains("normal")){
+    //change to include
+    addNewTagFilter(tag,"include");
+    e.src = "assets/include.svg";
+    e.classList.add("include")
+    e.classList.remove("normal")
+
+  }else if(e.classList.contains("include")){
+    //change to exclude
+    addNewTagFilter(tag,"exclude");
+    e.src = "assets/exclude.svg";
+    e.classList.remove("include")
+    e.classList.add("exclude")
+
+  }else if(e.classList.contains("exclude")){
+    //change to normal
+    addNewTagFilter(tag,"normal");
+    e.src = "assets/normal.svg";
+    e.classList.remove("exclude")
+    e.classList.add("normal")
+  }
+}
