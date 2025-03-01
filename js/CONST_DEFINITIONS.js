@@ -8,6 +8,7 @@ const config_url = "https://oliverhesse.github.io/Photo-Catalog/config.json"
 const data_folder_url = "https://oliverhesse.github.io/Photo-Catalog/data/"
 let TAG_RELATIONSHIPS = {}
 let TAG_IMG_RELATIONHIPS = {}
+let DE_NESTED_TAG_IMG_RELATIONSHIP
 let CONFIG_DETAILS = {}
 let TAGGED_FILES = []
 let TagFilterSettings = {"exclude":[],"include":[]}

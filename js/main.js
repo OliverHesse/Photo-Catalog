@@ -116,7 +116,7 @@ function closeFullscreen() {
 
 function create_child_tag_array(parent_tag){
   let child_array = []
-  for(const child of TAG_RELATIONSHIPS[parent_tag]["top-level-children"]){
+  for(const child of TAG_RELATIONSHIPS[parent_tag]){
     child_array += create_child_tag_array(child) + [child]
   }
   return child_array
@@ -124,40 +124,22 @@ function create_child_tag_array(parent_tag){
 
 
 function addNewTagFilter(tag,filter_type){
-  if(filter_type == "normal"){
-    TagFilterSettings["exclude"] =  TagFilterSettings["exclude"] .filter(item => item !== filter_type);
-    TagFilterSettings["include"] =  TagFilterSettings["include"] .filter(item => item !== filter_type);
-  }else if(filter_type == "exclude"){
-    //find all children and remove
-    child_list = create_child_tag_array(tag) + [tag];
-    TagFilterSettings["include"] =  TagFilterSettings["include"] .filter(item => !(child_list.includes(item)));
-    TagFilterSettings["exclude"] =  TagFilterSettings["exclude"] .filter(item => !(child_list.includes(item)));
-    //find all children and remove
+
+  TagFilterSettings["exclude"] =  TagFilterSettings["exclude"] .filter(item => item !== filter_type);
+  TagFilterSettings["include"] =  TagFilterSettings["include"] .filter(item => item !== filter_type);
+  if(filter_type == "exclude"){
+  
     TagFilterSettings["exclude"].push(tag)
   }else if(filter_type == "include"){
-    //find all children and remove
-    child_list = create_child_tag_array(tag) + [tag];
-    TagFilterSettings["include"] =  TagFilterSettings["include"] .filter(item => !(child_list.includes(item)));
-    TagFilterSettings["exclude"] =  TagFilterSettings["exclude"] .filter(item => !(child_list.includes(item)));
-    //find all children and remove
+    
     TagFilterSettings["include"].push(tag)
   }
 }
-//TODO implement
-function open_tag_select(){}
 
 
-let root_tag = "root"
-function dive_tag(e){
-  let root_title = getElementById("current-root-tag")
-  //clear holder
-  let container = document.getElementsByClassName("tag-container")[0]
+function display_tags(tag_list,container){
   container.innerHTML = ""
-  let tag = e.parent.childNodes[1].innerHTML
-  root_title.innerHTML = tag
-  let top_level_child_tags = TAG_RELATIONSHIPS[tag]["top-level-children"]
-  //generate tag option
-  for(const child_tag of top_level_child_tags){
+  for(const child_tag of tag_list){
     let tag_state = "normal"
     if(TagFilterSettings["exclude"].includes(child_tag)){tag_state="exclude"}
     if(TagFilterSettings["include"].includes(child_tag)){tag_state="include"}
@@ -168,6 +150,80 @@ function dive_tag(e){
                 </div>`
     container.innerHTML += html_text
   }
+}
+
+
+let root_tag = "root"
+//TODO implement
+function open_tag_select(){
+  let root_title = document.getElementById("current-root-tag")
+  let container = document.getElementsByClassName("tag-container")[0]
+  let blackout = document.getElementById("tag-select-blackout");
+  let retrace_btn = document.getElementById("retrace-root-tag")
+  retrace_btn.style.display = "none"
+  
+  blackout.style.display = 'flex'
+  root_title.innerHTML = root_tag
+  root_tag = "root"
+  console.log(TAG_RELATIONSHIPS[root_tag])
+  display_tags(TAG_RELATIONSHIPS[root_tag],container)
+}
+function close_tag_select(){
+  document.getElementById("tag-select-blackout").style.display = "none"
+}
+
+
+function get_filterd_image_list(){
+  let includedID = new Set()
+  for(const includeTag of TagFilterSettings["include"]){
+    for(const imageID of TAG_IMG_RELATIONHIPS[includeTag]){
+      includedID.add(imageID)
+    }
+  }
+  let excludedID = new Set()
+  for(const excludeTag of TagFilterSettings["exclude"]){
+    for(const imageID of TAG_IMG_RELATIONHIPS[excludeTag]){
+      excludedID.add(imageID)
+    }
+  }
+  return includedID.difference(excludedID )
+}
+
+function refresh_images(){
+  document.getElementsByClassName("img-container-holder")[0].innerHTML = ""
+  for(const image of get_filterd_image_list()){
+    load_image(image)
+  }
+
+}
+
+let tag_dive_path = ["root"]
+
+function retrace_tag(e){
+  tag_dive_path.pop()
+  let root_title = document.getElementById("current-root-tag")
+  root_title.innerHTML = tag_dive_path[tag_dive_path.length-1]
+  if(root_title.innerHTML == root_tag){
+    document.getElementById("retrace-root-tag").style.display = "none"
+  }
+  display_tags(TAG_RELATIONSHIPS[tag_dive_path[tag_dive_path.length-1]], document.getElementsByClassName("tag-container")[0])
+}
+
+function dive_tag(e){
+  let retrace_btn = document.getElementById("retrace-root-tag")
+  retrace_btn.style.display = "flex"
+  let root_title = document.getElementById("current-root-tag")
+  //clear holder
+  let container = document.getElementsByClassName("tag-container")[0]
+  
+  let tag = e.parentNode.children[1].innerHTML
+  root_title.innerHTML = tag
+  tag_dive_path.push(tag)
+  console.log(e.parentNode.children[1])
+  let top_level_child_tags = TAG_RELATIONSHIPS[tag]
+  console.log(top_level_child_tags)
+  //generate tag option
+  display_tags(top_level_child_tags,container)
 }
 
 function change_tag_state(e){
@@ -203,4 +259,6 @@ function change_tag_state(e){
     e.classList.remove("exclude")
     e.classList.add("normal")
   }
+
+  refresh_images()
 }

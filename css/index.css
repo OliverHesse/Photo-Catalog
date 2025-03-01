@@ -9,8 +9,10 @@ html,body{
   align-items: center;
   gap:20px;
 }
-.img-container-holde{
+.img-container{
   cursor: zoom-in;
+  margin-left:2px;
+  margin-right: 2px;
 }
 .img-container-holder{
   scrollbar-color: black black;
@@ -25,11 +27,7 @@ html,body{
   width: 800px;
   height: 100%;
   overflow-y:auto;
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
-  gap:4px;
-  flex-wrap: wrap;
+  text-align: center;
 }
 .selected-image-holder{
   position: fixed;
@@ -150,8 +148,7 @@ html,body{
 
 .tag-selection-btn-normal{
   display: block;
-  background:url("../assets/normal.svg") no-repeat;
-   
+
   width: 15px;
   height: 15px;
 }
