@@ -1,9 +1,9 @@
 
 
 function select_image(event){
-    console.log(event)
+
     let e = event.target
-    console.log(e)
+
     const offset = 0
     let link = e.src
     
@@ -15,8 +15,7 @@ function select_image(event){
     
     let holder = document.getElementsByClassName("selected-image-holder")[0]
     holder.style.display = "flex";
-    console.log(holder.offsetHeight)
-    
+
     let width = holder.offsetWidth
     let new_height = holder.offsetHeight
     let new_width = e.naturalWidth*(new_height/e.naturalHeight)
@@ -25,8 +24,7 @@ function select_image(event){
         new_height = e.naturalHeight*(new_width/e.naturalWidth)
     }
     
-    console.log(new_height)
-    console.log(new_width)
+
 
     selected_image_element.width = new_width
     selected_image_element.height = new_height
@@ -75,7 +73,7 @@ document.getElementsByClassName("selected-image-holder")[0].addEventListener("fu
 function recalculate_img_size(){
     let selected_image_element = document.getElementsByClassName("selected-image")[0]
     let holder = document.getElementsByClassName("selected-image-holder")[0]
-    console.log(screen.height)
+  
     
     let width =screen.width;
     let new_height = screen.height
@@ -84,9 +82,7 @@ function recalculate_img_size(){
         new_width = width
         new_height = selected_image_element.naturalHeight*(new_width/selected_image_element.naturalWidth)
     }
-    
-    console.log(new_height)
-    console.log(new_width)
+
 
     selected_image_element.width = new_width
     selected_image_element.height = new_height
@@ -125,8 +121,8 @@ function create_child_tag_array(parent_tag){
 
 function addNewTagFilter(tag,filter_type){
 
-  TagFilterSettings["exclude"] =  TagFilterSettings["exclude"] .filter(item => item !== filter_type);
-  TagFilterSettings["include"] =  TagFilterSettings["include"] .filter(item => item !== filter_type);
+  TagFilterSettings["exclude"] =  TagFilterSettings["exclude"].filter(item => item !== tag);
+  TagFilterSettings["include"] =  TagFilterSettings["include"].filter(item => item !== tag);
   if(filter_type == "exclude"){
   
     TagFilterSettings["exclude"].push(tag)
@@ -144,7 +140,7 @@ function display_tags(tag_list,container){
     if(TagFilterSettings["exclude"].includes(child_tag)){tag_state="exclude"}
     if(TagFilterSettings["include"].includes(child_tag)){tag_state="include"}
     let html_text = `<div class="tag-option">
-                    <img class = "tag-state-img normal"  onclick="change_tag_state(this)" style="cursor: pointer;" width="10px" height= "10px"src="assets/${tag_state}.svg">
+                    <img class = "tag-state-img ${tag_state}"  onclick="change_tag_state(this)" style="cursor: pointer;" width="10px" height= "10px"src="assets/${tag_state}.svg">
                     <span class = "tag-span" onclick="change_tag_state(this)" style="cursor: pointer;user-select: none;">${child_tag}</span>
                     <button onclick="dive_tag(this)" class="dive-tag-btn"><img width="10px" height= "10px"src="assets/retrace-tag.svg" style="transform: rotate(90deg);"></button>
                 </div>`
@@ -165,24 +161,45 @@ function open_tag_select(){
   blackout.style.display = 'flex'
   root_title.innerHTML = root_tag
   root_tag = "root"
-  console.log(TAG_RELATIONSHIPS[root_tag])
+
   display_tags(TAG_RELATIONSHIPS[root_tag],container)
 }
 function close_tag_select(){
   document.getElementById("tag-select-blackout").style.display = "none"
 }
 
+function get_nested_tag_images(tag){
+  
+  let final_array = []
+  for(const child_tag of TAG_RELATIONSHIPS[tag]){
+    let images = get_nested_tag_images(child_tag)
+    final_array = final_array.concat(images)
+    
+  }
+  return final_array.concat(DE_NESTED_TAG_IMG_RELATIONSHIP[tag])
+}
 
 function get_filterd_image_list(){
+  //TODO Change to include tag children aswell 
+  console.log(TagFilterSettings)
   let includedID = new Set()
+  console.log(TAG_RELATIONSHIPS)
+  console.log("creating filter")
   for(const includeTag of TagFilterSettings["include"]){
-    for(const imageID of TAG_IMG_RELATIONHIPS[includeTag]){
+    console.log(`processing tag ${includeTag}`)
+    for(const imageID of get_nested_tag_images(includeTag)){
+      
       includedID.add(imageID)
+      console.log(imageID)
     }
+  }
+  console.log(includedID)
+  if(includedID.size == 0){
+    includedID = new Set(TAGGED_FILES)
   }
   let excludedID = new Set()
   for(const excludeTag of TagFilterSettings["exclude"]){
-    for(const imageID of TAG_IMG_RELATIONHIPS[excludeTag]){
+    for(const imageID of get_nested_tag_images(excludeTag)){
       excludedID.add(imageID)
     }
   }
@@ -219,9 +236,9 @@ function dive_tag(e){
   let tag = e.parentNode.children[1].innerHTML
   root_title.innerHTML = tag
   tag_dive_path.push(tag)
-  console.log(e.parentNode.children[1])
+
   let top_level_child_tags = TAG_RELATIONSHIPS[tag]
-  console.log(top_level_child_tags)
+
   //generate tag option
   display_tags(top_level_child_tags,container)
 }
@@ -234,7 +251,7 @@ function change_tag_state(e){
   }else{
     //the span was clicked
     tag = e.innerHTML
-    console.log( e.parentNode.children)
+ 
     e = e.parentNode.children[0]
   }
 
