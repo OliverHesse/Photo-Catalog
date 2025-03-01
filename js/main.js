@@ -143,6 +143,8 @@ function addNewTagFilter(tag,filter_type){
     TagFilterSettings["include"].push(tag)
   }
 }
+//TODO implement
+function open_tag_select(){}
 
 
 let root_tag = "root"
