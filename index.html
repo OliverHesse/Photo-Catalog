@@ -6,11 +6,24 @@
     </head>
     <body>
         <div class = "option-bar">
-            <button id="add-tag-btn" onclick="open_tag_select()">Add Tags</button>
-            <button>View Tags</button>
+            <button id="add-tag-btn" class ="option-btn"onclick="open_tag_select()">Add Tags</button>
+            <button class ="option-btn" onclick="open_view_tags()">View Tags</button>
         </div>
         <div class = "img-container-holder">
 
+        </div>
+        <div class="blackout" id="tag-view-blackout" style="display: none;">
+            <div class="tag-container-holder">
+                <div style="width: 100%;padding-top: 5px; position: relative; display: flex; justify-content: center; font-size: 2rem; ">Active Tag Filters
+                    <div class="tag-title-grid-section" style="position: absolute; right: 20px; top:10px;">
+                        <button class="tool_button" onclick="close_view_tags()"><img height="15" width="15" src="assets/close_black.svg"></button>
+                    </div>
+                </div>
+                <div class="tag-filter-container">
+                   
+                </div>
+  
+            </div>
         </div>
         <div class="blackout" id="tag-select-blackout" style="display: none;" >
             <div class = "tag-container-holder">

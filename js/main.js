@@ -1,4 +1,5 @@
-
+//TODO Add some network optimisation where an image DOM element is not removed/reloaded if it is already loaded
+//TODO Add a load more butotn for when the user has more than a certain number of pictures
 
 function select_image(event){
 
@@ -278,4 +279,34 @@ function change_tag_state(e){
   }
 
   refresh_images()
+}
+
+
+function remove_filter_tag(e){
+  let parent = e.parentNode;
+  let tag = parent.firstChild.innerHTML
+  TagFilterSettings["exclude"] =  TagFilterSettings["exclude"].filter(item => item !== tag);
+  TagFilterSettings["include"] =  TagFilterSettings["include"].filter(item => item !== tag);
+  document.getElementsByClassName("tag-filter-container")[0].removeChild(parent)
+  refresh_images()
+}
+
+function open_view_tags(){
+  document.getElementById("tag-view-blackout").style.display = "flex"
+  let html = ""
+  for(const tag of TagFilterSettings["include"]){
+    html += `
+        <div class="filterd-tag filterd-included"><span>${tag}</span><button onclick="remove_filter_tag(this)" class="remove-tag-filter-btn"><img src="assets/close_black.svg" width="10px"height="10px"></button></div>
+    `
+  }
+  for(const tag of TagFilterSettings["exclude"]){
+    html += `
+    <div class="filterd-tag filterd-excluded"><span>${tag}</span><button onclick="remove_filter_tag(this)" class="remove-tag-filter-btn"><img src="assets/close_black.svg" width="10px"height="10px"></button></div>
+`
+  }
+  document.getElementsByClassName("tag-filter-container")[0].innerHTML += html
+}
+function close_view_tags(){
+  document.getElementById("tag-view-blackout").style.display = "none"
+  document.getElementsByClassName("tag-filter-container").innerHTML = ""
 }
