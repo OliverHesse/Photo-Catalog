@@ -1,4 +1,4 @@
-const INIT_FUNCTION_CALL_ORDER = [load_config,get_initial_images,generate_tag_relationships]
+const INIT_FUNCTION_CALL_ORDER = [get_taged_files,load_config,get_initial_images,generate_tag_relationships]
 //TO KEEP MY SANITY THERE CAN ONLY BE 1 OF ANY TAG. even if a tag is a child of another tag it cannot share a name with any other tag
 //TODO fix this shit
 function generate_nested_tags_tag_relationship(tag_dic,parent_tag){
@@ -19,10 +19,13 @@ function generate_nested_tags_tag_relationship(tag_dic,parent_tag){
 }
 async function get_taged_files(){
     const response = await fetch(data_folder_url+"tagged_files.json ")
+    console.log(response)
     let data = await response.json()
+    console.log(data)
     for(const file_id of data["files"]){
         TAGGED_FILES.push(file_id)
     }
+
     console.log("finished loading tagged files")
     
 }
