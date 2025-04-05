@@ -7,6 +7,8 @@ not all tagged images are displayed
 
 once i have finished i want to try and make a template version,<br>
 that allows multiple types of remote file access, so others can use it.
+currently working on admin client though so i will finish that first
+
 
 TODO:
 =
@@ -16,3 +18,5 @@ TODO:
 - add some sort of image data? like a description
 - add sorting options mainly date taken
 - clean up code and naming conventions
+- make the scrolling buttons work(forgot they existed)
+- add zoom

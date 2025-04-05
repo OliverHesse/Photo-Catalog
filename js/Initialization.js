@@ -4,22 +4,19 @@ const INIT_FUNCTION_CALL_ORDER = [get_taged_files,load_config,get_initial_images
 //TODO fix this shit
 //root cannot be a tag
 function generate_nested_tags_tag_relationship(tag_dic,parent_tag){
-    console.log(parent_tag)
-    console.log(tag_dic["children"])
     let return_dic = {}
     let child_list = []
     for(const tag of Object.keys(tag_dic["children"])){
- 
         child_list.push(tag)
         if(tag_dic["children"][tag]["children"] == []){continue}
         return_dic = { ...return_dic, ...generate_nested_tags_tag_relationship(tag_dic["children"][tag],tag)};
     }
-    let dic = {};
-    dic[parent_tag] = child_list;
-    return { ...return_dic, ...dic}
+
+    return { ...return_dic, ...{[parent_tag]:child_list}}
     
 }
 async function get_taged_files(){
+    //TODO add error handling
     const response = await fetch(data_folder_url+"tagged_files.json ")
     console.log(response)
     let data = await response.json()
@@ -32,6 +29,7 @@ async function get_taged_files(){
     
 }
 async function generate_tag_relationships(){
+    //TODO add error handling
     const response = await fetch(data_folder_url+"tags.json")
     let data = await response.json()
     console.log(data)
@@ -40,7 +38,7 @@ async function generate_tag_relationships(){
         TAG_RELATIONSHIPS= {...TAG_RELATIONSHIPS, ...generate_nested_tags_tag_relationship(data[top_level_tag],top_level_tag)}
         root_children.push(top_level_tag)
     }
-    TAG_RELATIONSHIPS= {...TAG_RELATIONSHIPS, ...{"root":root_children}}
+    TAG_RELATIONSHIPS= {...TAG_RELATIONSHIPS, ...{[root_tag]:root_children}}
     
     generate_de_nested_tag_image_relationships(data)
     console.log(DE_NESTED_TAG_IMG_RELATIONSHIP)
@@ -49,29 +47,24 @@ async function generate_tag_relationships(){
 
 
 function generate_de_nested_tag_image_relationships(data){
- 
-    console.log(data)
     for(const key of Object.keys(data)){
         generate_de_nested_tag_image_relationships(data[key]["children"])
-        let new_dic = {}
-        new_dic[key] = data[key]["content"]
-        DE_NESTED_TAG_IMG_RELATIONSHIP = {...DE_NESTED_TAG_IMG_RELATIONSHIP, ...new_dic}
+        DE_NESTED_TAG_IMG_RELATIONSHIP = {...DE_NESTED_TAG_IMG_RELATIONSHIP, ...{[key]:data[key]["content"]}}
     }
 }
 
 //by default does not support nested folders
 async function load_image(image_id) {
-    let image_url = FileURL+image_id+FileExportData
+
     let NewImage = new Image()
-    NewImage.src = image_url
+    NewImage.src =  FileURL+image_id+FileExportData
     NewImage.classList.add("img-container")
     NewImage.onclick = select_image
     NewImage.onload = function()
     {
-        let origin_height = NewImage.naturalHeight;
-        let origin_width = NewImage.naturalWidth;
+
         NewImage.height = CONFIG_DETAILS["img-height-default"]
-        NewImage.width = (origin_width)*(CONFIG_DETAILS["img-height-default"]/origin_height)
+        NewImage.width = ( NewImage.naturalWidth)*(CONFIG_DETAILS["img-height-default"]/ NewImage.naturalHeight)
        
         document.getElementsByClassName("img-container-holder")[0].appendChild(NewImage)
         console.log("image_loaded")
@@ -94,11 +87,10 @@ async function get_initial_images(){
 }
 
 async function load_config(){
+    //TODO add error handling
     let response = await fetch(config_url)
     let data = await response.json()
     CONFIG_DETAILS = data
-    console.log(CONFIG_DETAILS)
-    console.log(data)
     console.log("finished loading config")
  
 }
@@ -108,7 +100,7 @@ async function InitializeCatalog() {
     }
 
 }
-
+//run startup functions
 InitializeCatalog()
 
 

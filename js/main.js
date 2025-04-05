@@ -4,12 +4,10 @@
 function select_image(event){
 
     let e = event.target
-
-    const offset = 0
-    let link = e.src
+    //replace default width with bigger one
+    //either make this a setting or find way to get the images native width for max detail
+    let link = e.src.split("&sz=w")[0]+`&sz=w${5200}`
     
-    link = link.split("&sz=w")[0]
-    link += `&sz=w${5200}`
     let selected_image_element = document.getElementsByClassName("selected-image")[0]
 
     selected_image_element.src = link
@@ -17,21 +15,17 @@ function select_image(event){
     let holder = document.getElementsByClassName("selected-image-holder")[0]
     holder.style.display = "flex";
 
-    let width = holder.offsetWidth
     let new_height = holder.offsetHeight
     let new_width = e.naturalWidth*(new_height/e.naturalHeight)
-    if(new_width > (width+offset)){
-        new_width = width-offset
+    
+    //for very wide images
+    if(new_width > (holder.offsetWidth)){
+        new_width = holder.offsetWidth
         new_height = e.naturalHeight*(new_width/e.naturalWidth)
     }
     
-
-
     selected_image_element.width = new_width
     selected_image_element.height = new_height
-
-
-    
 
 }
 
@@ -55,7 +49,6 @@ function full_screen_select(){
         openFullscreen(document.getElementsByClassName("selected-image-holder")[0])
         recalculate_img_size()
     } else{
-        
         screen_state = "normal"
         btn.src = "assets/expand-fullscreen.svg"
         closeFullscreen()
@@ -73,64 +66,44 @@ document.getElementsByClassName("selected-image-holder")[0].addEventListener("fu
 
 function recalculate_img_size(){
     let selected_image_element = document.getElementsByClassName("selected-image")[0]
-    let holder = document.getElementsByClassName("selected-image-holder")[0]
-  
-    
-    let width =screen.width;
     let new_height = screen.height
     let new_width = selected_image_element.naturalWidth*(new_height/selected_image_element.naturalHeight)
-    if(new_width > (width)){
-        new_width = width
+    //for wide images
+    if(new_width > (screen.width)){
+        new_width = screen.width
         new_height = selected_image_element.naturalHeight*(new_width/selected_image_element.naturalWidth)
     }
 
-
     selected_image_element.width = new_width
     selected_image_element.height = new_height
-
-
 }
 
 function openFullscreen(elem) {
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) { /* Safari */
+    } else if (elem.webkitRequestFullscreen) { // Safari 
       elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { /* IE11 */
+    } else if (elem.msRequestFullscreen) { // IE11 
       elem.msRequestFullscreen();
     }
 }
 function closeFullscreen() {
     if (document.exitFullscreen) {
       document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) { /* Safari */
+    } else if (document.webkitExitFullscreen) { // Safari 
       document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) { /* IE11 */
+    } else if (document.msExitFullscreen) { // IE11 
       document.msExitFullscreen();
     }
   }
 
-
-function create_child_tag_array(parent_tag){
-  let child_array = []
-  for(const child of TAG_RELATIONSHIPS[parent_tag]){
-    child_array += create_child_tag_array(child) + [child]
-  }
-  return child_array
-}
-
-
 function addNewTagFilter(tag,filter_type){
-
+  //remove it from filter list
   TagFilterSettings["exclude"] =  TagFilterSettings["exclude"].filter(item => item !== tag);
   TagFilterSettings["include"] =  TagFilterSettings["include"].filter(item => item !== tag);
-  if(filter_type == "exclude"){
-  
-    TagFilterSettings["exclude"].push(tag)
-  }else if(filter_type == "include"){
-    
-    TagFilterSettings["include"].push(tag)
-  }
+  //add back in with new filter
+  if(filter_type == "exclude"){TagFilterSettings["exclude"].push(tag)}
+  else if(filter_type == "include"){TagFilterSettings["include"].push(tag)}
 }
 
 
@@ -140,7 +113,8 @@ function display_tags(tag_list,container){
     let tag_state = "normal"
     if(TagFilterSettings["exclude"].includes(child_tag)){tag_state="exclude"}
     if(TagFilterSettings["include"].includes(child_tag)){tag_state="include"}
-    let html_text = `<div class="tag-option">
+    let html_text = `
+                <div class="tag-option">
                     <img class = "tag-state-img ${tag_state}"  onclick="change_tag_state(this)" style="cursor: pointer;" width="10px" height= "10px"src="assets/${tag_state}.svg">
                     <span class = "tag-span" onclick="change_tag_state(this)" style="cursor: pointer;user-select: none;">${child_tag}</span>
                     <button onclick="dive_tag(this)" class="dive-tag-btn"><img width="10px" height= "10px"src="assets/retrace-tag.svg" style="transform: rotate(90deg);"></button>
@@ -149,28 +123,19 @@ function display_tags(tag_list,container){
   }
 }
 
-
-let root_tag = "root"
-//TODO implement
 function open_tag_select(){
-  let root_title = document.getElementById("current-root-tag")
-  let container = document.getElementsByClassName("tag-container")[0]
-  let blackout = document.getElementById("tag-select-blackout");
-  let retrace_btn = document.getElementById("retrace-root-tag")
-  retrace_btn.style.display = "none"
-  
-  blackout.style.display = 'flex'
-  root_title.innerHTML = root_tag
-  root_tag = "root"
+  document.getElementById("current-root-tag").innerHTML = root_tag
+  document.getElementById("retrace-root-tag").style.display = "none"
+  document.getElementById("tag-select-blackout").style.display = 'flex'
 
-  display_tags(TAG_RELATIONSHIPS[root_tag],container)
+  display_tags(TAG_RELATIONSHIPS[root_tag],document.getElementsByClassName("tag-container")[0])
 }
+
 function close_tag_select(){
   document.getElementById("tag-select-blackout").style.display = "none"
 }
 
 function get_nested_tag_images(tag){
-  
   let final_array = []
   for(const child_tag of TAG_RELATIONSHIPS[tag]){
     let images = get_nested_tag_images(child_tag)
@@ -180,42 +145,39 @@ function get_nested_tag_images(tag){
   return final_array.concat(DE_NESTED_TAG_IMG_RELATIONSHIP[tag])
 }
 
-function get_filterd_image_list(){
-  //TODO Change to include tag children aswell 
-  console.log(TagFilterSettings)
+function get_filterd_images(){
+
   let includedID = new Set()
-  console.log(TAG_RELATIONSHIPS)
-  console.log("creating filter")
+
   for(const includeTag of TagFilterSettings["include"]){
-    console.log(`processing tag ${includeTag}`)
-    for(const imageID of get_nested_tag_images(includeTag)){
-      
+    for(const imageID of get_nested_tag_images(includeTag)){      
       includedID.add(imageID)
-      console.log(imageID)
     }
   }
-  console.log(includedID)
+
   if(includedID.size == 0){
     includedID = new Set(TAGGED_FILES)
   }
+
   let excludedID = new Set()
   for(const excludeTag of TagFilterSettings["exclude"]){
     for(const imageID of get_nested_tag_images(excludeTag)){
       excludedID.add(imageID)
     }
   }
+
   return includedID.difference(excludedID )
 }
 
 function refresh_images(){
   document.getElementsByClassName("img-container-holder")[0].innerHTML = ""
-  for(const image of get_filterd_image_list()){
+  for(const image of get_filterd_images()){
     load_image(image)
   }
 
 }
 
-let tag_dive_path = ["root"]
+let tag_dive_path = [root_tag]
 
 function retrace_tag(e){
   tag_dive_path.pop()
@@ -228,20 +190,15 @@ function retrace_tag(e){
 }
 
 function dive_tag(e){
-  let retrace_btn = document.getElementById("retrace-root-tag")
-  retrace_btn.style.display = "flex"
-  let root_title = document.getElementById("current-root-tag")
-  //clear holder
-  let container = document.getElementsByClassName("tag-container")[0]
-  
+  document.getElementById("retrace-root-tag").style.display = "flex"
+
   let tag = e.parentNode.children[1].innerHTML
-  root_title.innerHTML = tag
+  document.getElementById("current-root-tag").innerHTML = tag
+
   tag_dive_path.push(tag)
 
-  let top_level_child_tags = TAG_RELATIONSHIPS[tag]
-
   //generate tag option
-  display_tags(top_level_child_tags,container)
+  display_tags( TAG_RELATIONSHIPS[tag],document.getElementsByClassName("tag-container")[0])
 }
 
 function change_tag_state(e){
@@ -255,7 +212,6 @@ function change_tag_state(e){
  
     e = e.parentNode.children[0]
   }
-
   if(e.classList.contains("normal")){
     //change to include
     addNewTagFilter(tag,"include");

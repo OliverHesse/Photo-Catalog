@@ -5,6 +5,7 @@ const FileURL = "https://drive.google.com/thumbnail?id="
 const FileExportData = "&export&sz=w1000"
 const config_url = "https://oliverhesse.github.io/Photo-Catalog/config.json"
 const data_folder_url = "https://oliverhesse.github.io/Photo-Catalog/data/"
+const root_tag = "root"
 let TAG_RELATIONSHIPS = {}
 let TAG_IMG_RELATIONHIPS = {}
 let DE_NESTED_TAG_IMG_RELATIONSHIP
